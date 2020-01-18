@@ -19,7 +19,7 @@ public class GroupManager {
 
     public GroupBean loadGroup(int id) {
         try (Connection connection = dataService.getDatabaseManager().getConnection()) {
-            final String sql = "SELECT * FROM permissions WHERE group_id = ?";
+            final String sql = "SELECT * FROM permissions WHERE group_id >= ?";
 
             final PreparedStatement statement = connection.prepareStatement(sql);
             statement.setInt(1, id);
