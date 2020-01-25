@@ -7,12 +7,15 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
 
 public class PlayerManager {
 
     private DataService dataService;
+
+    private static final PlayerBean DEFAULT_BEAN = new PlayerBean(UUID.randomUUID(), 50, Date.from(Instant.now()), Date.from(Instant.now()), "PLAYER");
 
     public PlayerManager(DataService dataService) {
         this.dataService = dataService;
@@ -22,19 +25,44 @@ public class PlayerManager {
         try (Connection connection = this.dataService.getDatabaseManager().getConnection()) {
             final String sql = "SELECT * FROM players WHERE uuid = ?";
 
-            final PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, uuid.toString());
+            final PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, uuid.toString());
 
-            final ResultSet resultSet = preparedStatement.executeQuery();
+            final ResultSet result = statement.executeQuery();
 
-            if (resultSet.next()) {
-                final int coins = resultSet.getInt("coins");
-                final Date lastConnection = resultSet.getDate("last_connection");
-                final Date firstConnection = resultSet.getDate("first_connection");
-                final int groupId = resultSet.getInt("group_id");
+            if (result.next()) {
+                final int coins = result.getInt("coins");
+                final Date lastConnection = result.getDate("last_connection");
+                final Date firstConnection = result.getDate("first_connection");
+                final String group = result.getString("group_id");
 
-                return new PlayerBean(uuid, coins, lastConnection, firstConnection, groupId);
+                return new PlayerBean(uuid, coins, lastConnection, firstConnection, group);
+            } else {
+                return this.registerPlayer(uuid);
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    private PlayerBean registerPlayer(UUID uuid) {
+        try (Connection connection = this.dataService.getDatabaseManager().getConnection()) {
+            final PlayerBean bean = (PlayerBean) DEFAULT_BEAN.clone();
+
+            final String sql = "INSERT INTO players(uuid, coins, last_connection, first_connection, group_id) VALUES(?, ?, ?, ?, ?)";
+
+            final PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, uuid.toString());
+            statement.setInt(2, bean.getCoins());
+            statement.setDate(3, new java.sql.Date(bean.getLastConnection().getTime()));
+            statement.setDate(4, new java.sql.Date(bean.getFirstConnection().getTime()));
+            statement.setString(5, bean.getGroup());
+
+            statement.executeUpdate();
+
+            return bean;
         } catch (SQLException e) {
             e.printStackTrace();
         }
