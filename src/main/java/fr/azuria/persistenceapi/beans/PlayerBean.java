@@ -9,14 +9,14 @@ public class PlayerBean implements Cloneable {
     private int coins;
     private Date lastConnection;
     private Date firstConnection;
-    private String group;
+    private int groupId;
 
-    public PlayerBean(UUID uuid, int coins, Date lastConnection, Date firstConnection, String group) {
+    public PlayerBean(UUID uuid, int coins, Date lastConnection, Date firstConnection, int groupId) {
         this.uuid = uuid;
         this.coins = coins;
         this.lastConnection = lastConnection;
         this.firstConnection = firstConnection;
-        this.group = group;
+        this.groupId = groupId;
     }
 
     public UUID getUUID() {
@@ -51,12 +51,12 @@ public class PlayerBean implements Cloneable {
         this.firstConnection = firstConnection;
     }
 
-    public String getGroup() {
-        return group;
+    public int getGroupId() {
+        return groupId;
     }
 
-    public void setGroup(String group) {
-        this.group = group;
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
     }
 
     @Override

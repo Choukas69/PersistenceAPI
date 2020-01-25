@@ -18,7 +18,7 @@ public class DatabaseManager {
     }
 
     private void setupDataSource() {
-        BasicDataSource dataSource = new BasicDataSource();
+        final BasicDataSource dataSource = new BasicDataSource();
 
         dataSource.setDriverClassName("com.mysql.jdbc.Driver");
         dataSource.setUsername(databaseCredentials.getUsername());

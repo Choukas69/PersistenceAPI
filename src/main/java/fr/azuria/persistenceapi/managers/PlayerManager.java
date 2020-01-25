@@ -15,7 +15,7 @@ public class PlayerManager {
 
     private DataService dataService;
 
-    private static final PlayerBean DEFAULT_BEAN = new PlayerBean(UUID.randomUUID(), 50, Date.from(Instant.now()), Date.from(Instant.now()), "PLAYER");
+    private static final PlayerBean DEFAULT_BEAN = new PlayerBean(UUID.randomUUID(), 50, Date.from(Instant.now()), Date.from(Instant.now()), 1);
 
     public PlayerManager(DataService dataService) {
         this.dataService = dataService;
@@ -34,9 +34,9 @@ public class PlayerManager {
                 final int coins = result.getInt("coins");
                 final Date lastConnection = result.getDate("last_connection");
                 final Date firstConnection = result.getDate("first_connection");
-                final String group = result.getString("group_id");
+                final int groupId = result.getInt("groupId_id");
 
-                return new PlayerBean(uuid, coins, lastConnection, firstConnection, group);
+                return new PlayerBean(uuid, coins, lastConnection, firstConnection, groupId);
             } else {
                 return this.registerPlayer(uuid);
             }
@@ -51,14 +51,14 @@ public class PlayerManager {
         try (Connection connection = this.dataService.getDatabaseManager().getConnection()) {
             final PlayerBean bean = (PlayerBean) DEFAULT_BEAN.clone();
 
-            final String sql = "INSERT INTO players(uuid, coins, last_connection, first_connection, group_id) VALUES(?, ?, ?, ?, ?)";
+            final String sql = "INSERT INTO players(uuid, coins, last_connection, first_connection, groupId_id) VALUES(?, ?, ?, ?, ?)";
 
             final PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, uuid.toString());
             statement.setInt(2, bean.getCoins());
             statement.setDate(3, new java.sql.Date(bean.getLastConnection().getTime()));
             statement.setDate(4, new java.sql.Date(bean.getFirstConnection().getTime()));
-            statement.setString(5, bean.getGroup());
+            statement.setInt(5, bean.getGroupId());
 
             statement.executeUpdate();
 
