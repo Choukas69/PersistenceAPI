@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class GroupsManager {
 
@@ -16,21 +17,25 @@ public class GroupsManager {
         this.dataService = dataService;
     }
 
-    public GroupBean loadGroup(int id) {
+    public ArrayList<GroupBean> loadGroups() {
         try (Connection connection = dataService.getDatabaseManager().getConnection()) {
-            final String SQL = "SELECT * FROM `groups` WHERE id = ?";
+            final String SQL = "SELECT * FROM `groups`";
 
             PreparedStatement statement = connection.prepareStatement(SQL);
-            statement.setInt(1, id);
 
             ResultSet result = statement.executeQuery();
 
-            if (result.next()) {
+            ArrayList<GroupBean> groups = new ArrayList<>();
+
+            while (result.next()) {
+                final int id = result.getInt("id");
                 final String name = result.getString("name");
                 final String tag = result.getString("tag");
 
-                return new GroupBean(id, name, tag);
+                groups.add(new GroupBean(id, name, tag));
             }
+
+            return groups;
 
         } catch (SQLException e) {
             e.printStackTrace();
