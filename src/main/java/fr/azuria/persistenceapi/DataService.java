@@ -2,13 +2,16 @@ package fr.azuria.persistenceapi;
 
 import fr.azuria.persistenceapi.managers.GroupsManager;
 import fr.azuria.persistenceapi.managers.PlayersManager;
+import fr.azuria.persistenceapi.managers.permissions.PermissionsManager;
 import fr.azuria.persistenceapi.utils.DatabaseCredentials;
 
 public class DataService {
 
-    private DatabaseManager databaseManager;
-    private PlayersManager playerManager;
-    private GroupsManager groupManager;
+    private final DatabaseManager databaseManager;
+
+    private final PlayersManager playerManager;
+    private final GroupsManager groupManager;
+    private final PermissionsManager permissionManager;
 
     public DataService(String host, String username, String password, String databaseName, int port) {
         final DatabaseCredentials credentials = new DatabaseCredentials(host, username, password, databaseName, port);
@@ -16,6 +19,7 @@ public class DataService {
 
         this.playerManager = new PlayersManager(this);
         this.groupManager = new GroupsManager(this);
+        this.permissionManager = new PermissionsManager(this);
     }
 
     public DatabaseManager getDatabaseManager() {
@@ -29,4 +33,6 @@ public class DataService {
     public GroupsManager getGroupManager() {
         return groupManager;
     }
+
+    public PermissionsManager getPermissionManager() { return permissionManager; }
 }

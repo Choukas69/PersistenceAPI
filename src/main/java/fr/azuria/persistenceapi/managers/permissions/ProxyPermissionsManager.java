@@ -1,7 +1,7 @@
 package fr.azuria.persistenceapi.managers.permissions;
 
 import fr.azuria.persistenceapi.DataService;
-import fr.azuria.persistenceapi.beans.GroupBean;
+import fr.azuria.persistenceapi.beans.PlayerBean;
 import fr.azuria.persistenceapi.beans.permissions.ProxyPermissionBean;
 
 import java.sql.Connection;
@@ -17,9 +17,9 @@ public class ProxyPermissionsManager {
         this.dataService = dataService;
     }
 
-    public ProxyPermissionBean getProxyPermissions(GroupBean groupBean) {
+    public ProxyPermissionBean getProxyPermissions(PlayerBean playerBean) {
         try (Connection connection = this.dataService.getDatabaseManager().getConnection()) {
-            final int groupId = groupBean.getId();
+            final int groupId = playerBean.getGroupId();
 
             final String SQL = "SELECT * FROM proxy_permissions WHERE group_id = ?";
 
