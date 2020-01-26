@@ -11,24 +11,24 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
 
-public class PlayerManager {
+public class PlayersManager {
 
-    private DataService dataService;
+    private final DataService dataService;
 
     private static final PlayerBean DEFAULT_BEAN = new PlayerBean(UUID.randomUUID(), 50, Date.from(Instant.now()), Date.from(Instant.now()), 1);
 
-    public PlayerManager(DataService dataService) {
+    public PlayersManager(DataService dataService) {
         this.dataService = dataService;
     }
 
     public PlayerBean loadPlayer(UUID uuid) {
         try (Connection connection = this.dataService.getDatabaseManager().getConnection()) {
-            final String sql = "SELECT * FROM players WHERE uuid = ?";
+            final String SQL = "SELECT * FROM players WHERE uuid = ?";
 
-            final PreparedStatement statement = connection.prepareStatement(sql);
+            PreparedStatement statement = connection.prepareStatement(SQL);
             statement.setString(1, uuid.toString());
 
-            final ResultSet result = statement.executeQuery();
+            ResultSet result = statement.executeQuery();
 
             if (result.next()) {
                 final int coins = result.getInt("coins");
@@ -51,9 +51,9 @@ public class PlayerManager {
         try (Connection connection = this.dataService.getDatabaseManager().getConnection()) {
             final PlayerBean bean = (PlayerBean) DEFAULT_BEAN.clone();
 
-            final String sql = "INSERT INTO players(uuid, coins, last_connection, first_connection, groupId_id) VALUES(?, ?, ?, ?, ?)";
+            final String SQL = "INSERT INTO players(uuid, coins, last_connection, first_connection, group_id) VALUES(?, ?, ?, ?, ?)";
 
-            final PreparedStatement statement = connection.prepareStatement(sql);
+            PreparedStatement statement = connection.prepareStatement(SQL);
             statement.setString(1, uuid.toString());
             statement.setInt(2, bean.getCoins());
             statement.setDate(3, new java.sql.Date(bean.getLastConnection().getTime()));
