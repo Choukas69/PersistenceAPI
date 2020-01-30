@@ -2,7 +2,7 @@ package fr.azuria.persistenceapi.managers.permissions;
 
 import fr.azuria.persistenceapi.DataService;
 import fr.azuria.persistenceapi.beans.PlayerBean;
-import fr.azuria.persistenceapi.beans.permissions.ProxyPermissionBean;
+import fr.azuria.persistenceapi.beans.permissions.ProxyPermissionsBean;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,7 +17,7 @@ public class ProxyPermissionsManager {
         this.dataService = dataService;
     }
 
-    public ProxyPermissionBean getProxyPermissions(PlayerBean playerBean) {
+    public ProxyPermissionsBean getProxyPermissions(PlayerBean playerBean) {
         try (Connection connection = this.dataService.getDatabaseManager().getConnection()) {
             final int groupId = playerBean.getGroupId();
 
@@ -32,7 +32,7 @@ public class ProxyPermissionsManager {
                 boolean proxyCommandParty = resultSet.getBoolean("proxy_command_party");
                 boolean proxyCommandFriends = resultSet.getBoolean("proxy_command_friends");
 
-                return new ProxyPermissionBean(proxyCommandParty, proxyCommandFriends);
+                return new ProxyPermissionsBean(proxyCommandParty, proxyCommandFriends);
             }
         } catch (SQLException e) {
             e.printStackTrace();

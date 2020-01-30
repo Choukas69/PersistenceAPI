@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class PermissionsProvider {
 
     public static ArrayList<String> getPermissions(Object o) {
-        final ArrayList<String> permissions = new ArrayList<>();
+        ArrayList<String> permissions = new ArrayList<>();
 
         for (Field field : o.getClass().getDeclaredFields()) {
             Permission permission = field.getAnnotation(Permission.class);

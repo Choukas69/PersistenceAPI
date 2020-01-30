@@ -2,12 +2,12 @@ package fr.azuria.persistenceapi.managers;
 
 import fr.azuria.persistenceapi.DataService;
 import fr.azuria.persistenceapi.beans.GroupBean;
+import fr.azuria.persistenceapi.beans.PlayerBean;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 public class GroupsManager {
 
@@ -17,25 +17,22 @@ public class GroupsManager {
         this.dataService = dataService;
     }
 
-    public ArrayList<GroupBean> loadGroups() {
+    public GroupBean loadGroup(PlayerBean bean) {
         try (Connection connection = dataService.getDatabaseManager().getConnection()) {
-            final String SQL = "SELECT * FROM `groups`";
+            final String SQL = "SELECT * FROM `groups` WHERE id = ?";
 
             PreparedStatement statement = connection.prepareStatement(SQL);
+            statement.setInt(1, bean.getGroupId());
 
             ResultSet result = statement.executeQuery();
 
-            ArrayList<GroupBean> groups = new ArrayList<>();
-
-            while (result.next()) {
+            if (result.next()) {
                 final int id = result.getInt("id");
                 final String name = result.getString("name");
                 final String tag = result.getString("tag");
 
-                groups.add(new GroupBean(id, name, tag));
+                return new GroupBean(id, name, tag);
             }
-
-            return groups;
 
         } catch (SQLException e) {
             e.printStackTrace();

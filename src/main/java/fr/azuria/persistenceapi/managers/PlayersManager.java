@@ -50,11 +50,12 @@ public class PlayersManager {
     private PlayerBean registerPlayer(UUID uuid) {
         try (Connection connection = this.dataService.getDatabaseManager().getConnection()) {
             final PlayerBean bean = (PlayerBean) DEFAULT_BEAN.clone();
+            bean.setUUID(uuid);
 
             final String SQL = "INSERT INTO players(uuid, coins, last_connection, first_connection, group_id) VALUES(?, ?, ?, ?, ?)";
 
             PreparedStatement statement = connection.prepareStatement(SQL);
-            statement.setString(1, uuid.toString());
+            statement.setString(1, bean.getUUID().toString());
             statement.setInt(2, bean.getCoins());
             statement.setDate(3, new java.sql.Date(bean.getLastConnection().getTime()));
             statement.setDate(4, new java.sql.Date(bean.getFirstConnection().getTime()));

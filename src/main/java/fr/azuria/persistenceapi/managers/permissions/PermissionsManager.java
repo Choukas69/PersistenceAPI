@@ -2,22 +2,20 @@ package fr.azuria.persistenceapi.managers.permissions;
 
 import fr.azuria.persistenceapi.DataService;
 import fr.azuria.persistenceapi.beans.PlayerBean;
-
-import java.util.ArrayList;
+import fr.azuria.persistenceapi.beans.permissions.PermissionsBean;
+import fr.azuria.persistenceapi.beans.permissions.ProxyPermissionsBean;
 
 public class PermissionsManager {
 
-    private final ProxyPermissionsManager proxyPermissionsManager;
+    private ProxyPermissionsManager proxyPermissionsManager;
 
     public PermissionsManager(DataService dataService) {
         this.proxyPermissionsManager = new ProxyPermissionsManager(dataService);
     }
 
-    public ArrayList<String> getAllPermissions(PlayerBean playerBean) {
-        ArrayList<String> permissions = new ArrayList<>();
+    public PermissionsBean getPermissions(PlayerBean playerBean) {
+        ProxyPermissionsBean proxyPermissionsBean = this.proxyPermissionsManager.getProxyPermissions(playerBean);
 
-        permissions.addAll(this.proxyPermissionsManager.getProxyPermissions(playerBean).getRealPermissions());
-
-        return permissions;
+        return new PermissionsBean(proxyPermissionsBean);
     }
 }

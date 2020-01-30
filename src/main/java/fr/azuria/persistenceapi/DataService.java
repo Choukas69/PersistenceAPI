@@ -7,19 +7,23 @@ import fr.azuria.persistenceapi.utils.DatabaseCredentials;
 
 public class DataService {
 
-    private final DatabaseManager databaseManager;
+    private DatabaseManager databaseManager;
 
-    private final PlayersManager playerManager;
-    private final GroupsManager groupManager;
-    private final PermissionsManager permissionManager;
+    private PlayersManager playersManager;
+    private GroupsManager groupsManager;
+    private PermissionsManager permissionsManager;
 
     public DataService(String host, String username, String password, String databaseName, int port) {
-        final DatabaseCredentials credentials = new DatabaseCredentials(host, username, password, databaseName, port);
+        DatabaseCredentials credentials = new DatabaseCredentials(host, username, password, databaseName, port);
         this.databaseManager = new DatabaseManager(credentials);
 
-        this.playerManager = new PlayersManager(this);
-        this.groupManager = new GroupsManager(this);
-        this.permissionManager = new PermissionsManager(this);
+        this.playersManager = new PlayersManager(this);
+        this.groupsManager = new GroupsManager(this);
+        this.permissionsManager = new PermissionsManager(this);
+    }
+
+    public void close() {
+        this.databaseManager.closePool();
     }
 
     public DatabaseManager getDatabaseManager() {
@@ -27,12 +31,12 @@ public class DataService {
     }
 
     public PlayersManager getPlayerManager() {
-        return playerManager;
+        return playersManager;
     }
 
     public GroupsManager getGroupManager() {
-        return groupManager;
+        return groupsManager;
     }
 
-    public PermissionsManager getPermissionManager() { return permissionManager; }
+    public PermissionsManager getPermissionManager() { return permissionsManager; }
 }
